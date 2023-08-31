@@ -1,0 +1,39 @@
+service: passwordless
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-east-1
+
+
+  environment:
+    STAGE: ${self:custom.stage}
+
+custom:
+  stage: ${opt:stage, 'development'}
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
+functions:
+  sendotp:
+    handler: bin/sendotp
+    events:
+      - http:
+          path: /auth/send-otp
+          method: post
+
+  #    # you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
