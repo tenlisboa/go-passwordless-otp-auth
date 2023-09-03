@@ -13,3 +13,6 @@ deploy-dev: clean build
 
 deploy-prod: clean build
 	sls deploy --stage production --verbose
+
+deploy-local: build
+	sls offline --useDocker

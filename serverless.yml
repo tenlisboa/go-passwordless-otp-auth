@@ -5,7 +5,18 @@ provider:
   name: aws
   runtime: go1.x
   region: us-east-1
-
+  iam:
+    role:
+      statements:
+        - Sid: DynamoDB
+          Effect: Allow
+          Action: 
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          Resource: 
+          - Fn::GetAtt:
+            - OtpTable
+            - Arn
 
   environment:
     STAGE: ${self:custom.stage}
@@ -26,8 +37,26 @@ functions:
           path: /auth/send-otp
           method: post
 
-  #    # you can add CloudFormation resource templates here
-#resources:
+plugins:
+  - serverless-offline
+
+resources:
+  Resources:
+    OtpTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Otp
+        AttributeDefinitions:
+        - AttributeName: Email
+          AttributeType: S
+        KeySchema:
+        - AttributeName: Email
+          KeyType: HASH
+        TimeToLiveSpecification:
+          Enabled: True
+          AttributeName: ExpiresIn
+        BillingMode: PAY_PER_REQUEST
+
 #  Resources:
 #    NewResource:
 #      Type: AWS::S3::Bucket

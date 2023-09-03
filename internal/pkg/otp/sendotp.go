@@ -5,10 +5,10 @@ import (
 )
 
 type OtpService struct {
-	repo interface{}
+	repo OtpRepository
 }
 
-func NewOtpService(repo interface{}) *OtpService {
+func NewOtpService(repo OtpRepository) *OtpService {
 	return &OtpService{
 		repo: repo,
 	}
@@ -25,6 +25,18 @@ func (otps *OtpService) generateOtp() string {
 	return string(code)
 }
 
-func (otps *OtpService) Execute() string {
-	return otps.generateOtp()
+func (otps *OtpService) Execute(email string) error {
+	code := otps.generateOtp()
+
+	otp := &Otp{
+		Email: email,
+		Code:  code,
+	}
+
+	err := otps.repo.Save(*otp)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
