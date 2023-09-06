@@ -4,7 +4,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: go1.x
-  region: us-east-1
+  region: us-east-2
   iam:
     role:
       statements:
@@ -17,6 +17,12 @@ provider:
           - Fn::GetAtt:
             - OtpTable
             - Arn
+        - Sid: SendEmail
+          Effect: Allow
+          Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+          Resource: "*"
 
   environment:
     STAGE: ${self:custom.stage}

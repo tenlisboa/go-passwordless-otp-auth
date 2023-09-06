@@ -26,8 +26,10 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	// TODO: gerar codigo OTP - OK
 	// TODO: Salvar codigo em um cache - OK
+	// TODO: Enviar um email para o usuário - OK
 	repo := otp.NewOtpRepository()
-	svc := otp.NewOtpService(repo)
+	mailer := otp.NewMailer()
+	svc := otp.NewOtpService(repo, mailer)
 	err = svc.Execute(body.Email)
 	if err != nil {
 		fmt.Printf("Error in otp service execution: %s", err.Error())
@@ -37,7 +39,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}, err
 	}
 
-	// TODO: Enviar um email para o usuário
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
 		Body:       "Otp enviado com sucesso",

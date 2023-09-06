@@ -1,16 +1,19 @@
 package otp
 
 import (
+	"fmt"
 	"math/rand"
 )
 
 type OtpService struct {
-	repo OtpRepository
+	repo   OtpRepository
+	mailer *Mailer
 }
 
-func NewOtpService(repo OtpRepository) *OtpService {
+func NewOtpService(repo OtpRepository, mailer *Mailer) *OtpService {
 	return &OtpService{
-		repo: repo,
+		repo:   repo,
+		mailer: mailer,
 	}
 }
 
@@ -34,6 +37,16 @@ func (otps *OtpService) Execute(email string) error {
 	}
 
 	err := otps.repo.Save(*otp)
+	if err != nil {
+		return err
+	}
+
+	err = otps.mailer.SendEmail(&SendEmailInput{
+		Subject: "Seu código de autentição.",
+		Body:    fmt.Sprintf("Não compartilhe este código com ninguém: %s\n", code),
+		Email:   email,
+	})
+
 	if err != nil {
 		return err
 	}
