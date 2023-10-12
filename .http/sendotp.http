@@ -1,0 +1,5 @@
+POST https://5hnc5aa0fk.execute-api.us-east-2.amazonaws.com/development/auth/send-otp
+
+{
+  "email": "peram70679@ksyhtc.com"
+}
