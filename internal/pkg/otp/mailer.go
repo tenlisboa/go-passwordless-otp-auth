@@ -54,7 +54,7 @@ func (mailer *Mailer) SendEmail(input *SendEmailInput) error {
 				Data:    aws.String(input.Subject),
 			},
 		},
-		Source: aws.String("sobarad704@gameszox.com"),
+		Source: aws.String("teydadeydo@gufum.com"),
 	}
 
 	_, err := mailer.mailer.SendEmail(emailInput)

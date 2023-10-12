@@ -23,6 +23,7 @@ type Otp struct {
 
 type OtpRepository interface {
 	Save(entity Otp) error
+	GetByEmail(email string) (*Otp, error)
 }
 
 func NewOtpRepository() OtpRepository {
@@ -36,6 +37,29 @@ func NewOtpRepository() OtpRepository {
 		tableName: "Otp",
 		Api:       api,
 	}
+}
+
+func (repo *otpRepository) GetByEmail(email string) (*Otp, error) {
+	pk, _ := dynamodbattribute.MarshalMap(map[string]string{
+		"Email": email,
+	})
+	input := &dynamodb.GetItemInput{
+		Key:       pk,
+		TableName: &repo.tableName,
+	}
+
+	res, err := repo.Api.GetItem(input)
+	if err != nil {
+		return nil, err
+	}
+
+	var otp Otp
+	err = dynamodbattribute.UnmarshalMap(res.Item, &otp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &otp, nil
 }
 
 func (repo *otpRepository) Save(entity Otp) error {

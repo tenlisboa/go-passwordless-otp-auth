@@ -3,3 +3,12 @@ POST https://5hnc5aa0fk.execute-api.us-east-2.amazonaws.com/development/auth/sen
 {
   "email": "peram70679@ksyhtc.com"
 }
+
+###
+
+POST https://5hnc5aa0fk.execute-api.us-east-2.amazonaws.com/development/auth/verify-otp
+
+{
+  "email": "peram70679@ksyhtc.com",
+  "code": "un8ta51z9m"
+}

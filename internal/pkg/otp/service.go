@@ -1,8 +1,10 @@
 package otp
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type OtpService struct {
@@ -28,7 +30,7 @@ func (otps *OtpService) generateOtp() string {
 	return string(code)
 }
 
-func (otps *OtpService) Execute(email string) error {
+func (otps *OtpService) SendOtp(email string) error {
 	code := otps.generateOtp()
 
 	otp := &Otp{
@@ -47,6 +49,31 @@ func (otps *OtpService) Execute(email string) error {
 		Email:   email,
 	})
 
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (otps *OtpService) VerifyOtp(email, code string) error {
+	otp, err := otps.repo.GetByEmail(email)
+	if err != nil {
+		return err
+	}
+
+	// TODO: Se o OTP já foi verificado - OK
+	if otp.VerifiedAt != 0 {
+		return errors.New("código otp já foi verificado")
+	}
+	// TODO: Se o OTP não está expirado - OK
+	now := time.Now().Unix()
+	if otp.ExpiresIn-now < 0 {
+		return errors.New("código expirado")
+	}
+	// TODO: Verifica OTP - OK
+	otp.VerifiedAt = now
+	err = otps.repo.Save(*otp)
 	if err != nil {
 		return err
 	}

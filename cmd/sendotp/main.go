@@ -30,7 +30,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	repo := otp.NewOtpRepository()
 	mailer := otp.NewMailer()
 	svc := otp.NewOtpService(repo, mailer)
-	err = svc.Execute(body.Email)
+	err = svc.SendOtp(body.Email)
 	if err != nil {
 		fmt.Printf("Error in otp service execution: %s", err.Error())
 		return events.APIGatewayProxyResponse{
