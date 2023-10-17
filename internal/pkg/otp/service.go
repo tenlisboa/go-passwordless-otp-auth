@@ -62,6 +62,11 @@ func (otps *OtpService) VerifyOtp(email, code string) error {
 		return err
 	}
 
+	// TODO: Verifica se o OTP enviado é o mesmo - OK
+	if otp.Code != code {
+		return errors.New("código otp inválido")
+	}
+
 	// TODO: Se o OTP já foi verificado - OK
 	if otp.VerifiedAt != 0 {
 		return errors.New("código otp já foi verificado")
